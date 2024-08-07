@@ -9,7 +9,7 @@ public abstract class Character {
 		this.name = name;
 		this.currenthp = getHp();
 	}
-	
+
 	public Character(String name, int currenthp, int lvl) {
 		this.name = name;
 		this.lvl = lvl;
@@ -29,21 +29,21 @@ public abstract class Character {
 	public abstract double getAgility();
 
 	public abstract double getIntelligence();
-	
+
 	public abstract double getDamageGain();
-	
+
 	public abstract int getBaseArmor();
-	
+
 	public abstract int getBaseMinDamage();
 
 	public abstract int getBaseMaxDamage();
 
 	public int getArmor() {
-		return ((int) (getAgility()/6 + getBaseArmor()));
+		return ((int) (getAgility() / 6 + getBaseArmor()));
 	}
 
 	public int getHp() {
-		return (int) ((getStrength() * 22) +120);
+		return (int) ((getStrength() * 22) + 120);
 	}
 
 	public int getCurrenthp() {
@@ -51,7 +51,7 @@ public abstract class Character {
 	}
 
 	public void setCurrenthp(int currenthp) {
-		this.currenthp = currenthp < 0 ? 0 : currenthp; //ternaire
+		this.currenthp = currenthp < 0 ? 0 : currenthp; // ternaire
 	}
 
 	public int getMinDamage() {
@@ -59,7 +59,7 @@ public abstract class Character {
 	}
 
 	public int getMaxDamage() {
-		return  (int) (this.getBaseMaxDamage() + getDamageGain());
+		return (int) (this.getBaseMaxDamage() + getDamageGain());
 	}
 
 	public int getLvl() {
@@ -71,25 +71,32 @@ public abstract class Character {
 		this.lvl = lvl;
 		this.setCurrenthp(this.currenthp + (this.getHp() - lastHp));
 	}
-	
+
 	public void lvlUp() {
-		setLvl(lvl+1);
+		setLvl(lvl + 1);
+	}
+
+	public boolean attack(Character target) {
+		double damageReduction = 1-((0.06*target.getArmor())/(1+0.06*target.getArmor()));
+		double damage = getRandomBetween(this.getMinDamage(), this.getMaxDamage()) - damageReduction;
+		target.setCurrenthp((int) (target.getCurrenthp() - damage));
+		if (target.getCurrenthp() <=0) {
+			return true;
+		}
+		return false;
 	}
 	
-//	public static void attack(Character character) {
-//		
-//	}
-	
-	public void takeWound(int wound) {
-		this.setCurrenthp(this.getCurrenthp() - wound);
-//		this.currenthp -= wound;
+	public double getRandomBetween(int min, int max) {
+		return Math.floor((Math.random() * (max - min)) + min);
+		
 	}
-	
+
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName()+" [name=" + name + ", strength=" + getStrength() + ", agility=" + getAgility() + ", intelligence="
-				+ getIntelligence() + ", armor=" + getArmor() + ", hp=" + getHp() + ", currenthp=" + currenthp + ", minDamage="
-				+ getMinDamage() + ", maxDamage=" + getMaxDamage() + ", lvl=" + lvl + "] " +getDamageGain();
+		return this.getClass().getSimpleName() + " [name=" + name + ", strength=" + getStrength() + ", agility="
+				+ getAgility() + ", intelligence=" + getIntelligence() + ", armor=" + getArmor() + ", hp=" + getHp()
+				+ ", currenthp=" + currenthp + ", minDamage=" + getMinDamage() + ", maxDamage=" + getMaxDamage()
+				+ ", lvl=" + lvl + "] " + getDamageGain();
 	}
 
 }
